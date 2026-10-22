@@ -13,7 +13,7 @@ from tkinter.scrolledtext import ScrolledText
 from . import __version__
 from . import formats as F
 from . import report
-from .convert import Job, add_pairs, output_folder, pair_in_batch, run_jobs
+from .convert import Job, add_pairs, pair_in_batch, run_jobs
 from .dnd import enable_drops
 
 APP = 'Mupen Compat'
@@ -409,7 +409,7 @@ class App:
             try:
                 res = run_jobs(jobs, target, mode=mode, out_dir=out_dir, backup=backup)
                 self.results.put(('ok', res))
-            except Exception as ex:                        # noqa: BLE001 - shown to the user
+            except Exception as ex:                        # noqa: BLE001 - reported in a message box
                 self.results.put(('fail', ex))
         threading.Thread(target=work, daemon=True).start()
         self.root.after(100, self._poll, target, mode, out_dir)

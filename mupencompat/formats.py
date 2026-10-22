@@ -10,7 +10,6 @@ Every rule here comes from the emulator's own source, release by release (mupen6
 import gzip
 import os
 import struct
-import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 from .lz4frame import lz4_frame_decompress  # LZ4 frames in plain Python (no library needed)
@@ -116,7 +115,7 @@ SETTING_OPTION = {'Wii VC emulation': ('1.1.9', 'Wii VC emulation'),
 
 
 def setting_advice(name, value, v):
-    """What to tell the user about a sync setting the movie was recorded with, for version v (or ANY)."""
+    """The advice line for a sync setting the movie was recorded with, for version v (or ANY)."""
     since, option = SETTING_OPTION[name]
     if v != ANY and at_least(v, since) and option:
         return f'recorded with {name} = {value}: the old movie format can\'t store that, so set "{option}" to ' \

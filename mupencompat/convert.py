@@ -118,7 +118,7 @@ def prefixed(name, target):
 
 
 def appended(name, target):
-    """sk_6.reds100c.to_whomp.m64 -> sk_6.reds100c.to_whomp.mupen1.3.0-11.m64"""
+    """run_6.redcoins.to_whomp.m64 -> run_6.redcoins.to_whomp.mupen1.3.0-11.m64"""
     stem, ext = os.path.splitext(name)
     return f'{stem}{name_suffix(target)}{ext}'
 

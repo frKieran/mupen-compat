@@ -1,6 +1,6 @@
 """Build dist/MupenCompat.exe: one file, no Python needed to run it.
 
-    pip install pyinstaller pillow
+    pip install pyinstaller==6.22.3 pillow==12.3.0   (the versions the release was built with)
     python build.py
 """
 import os

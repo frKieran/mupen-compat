@@ -1,6 +1,6 @@
 """Unit tests for the format rules and the batch conversion (synthetic files; no emulator).
 
-    python -m unittest tests/test_formats.py -v      (from projects/mupen_compat)
+    python -m unittest tests/test_formats.py -v      (from the repository root)
 """
 import gzip
 import os
@@ -26,7 +26,7 @@ def movie(ext=4, flags=0, start=F.START_SNAPSHOT, n=10, length=None, cpu_cf=1.0,
     h[0x24:0x28] = tag
     struct.pack_into('<II', h, 0x28, 0, 0)
     struct.pack_into('<dd', h, 0x30, cpu_cf, rcp)
-    h[0xC4:0xC4 + 15] = b'SM64 ISLAND 1.1'
+    h[0xC4:0xC4 + 15] = b'SM64 TEST HACK1'
     return bytes(h) + bytes(range(4 * n))
 
 
@@ -226,16 +226,16 @@ class Pairing(unittest.TestCase):
         # state may be written
         sub = os.path.join(self.d, 'island')
         os.makedirs(sub)
-        m = os.path.join(sub, 'sk_6.reds100c.to_whomp.m64')
+        m = os.path.join(sub, 'run_6.redcoins.to_whomp.m64')
         open(m, 'wb').write(movie(ext=1))
-        st = os.path.join(sub, 'sk_6.st')
+        st = os.path.join(sub, 'run_6.st')
         open(st, 'wb').write(gzip.compress(state_body()))
         other = self.put('my state.st', lz4_stored(state_body()))
         jobs = [Job(m), Job(other)]
         add_pairs(jobs)
         res = run_jobs(jobs, '1.3.0-11')
         self.assertEqual({os.path.basename(r.job.path): r.status for r in res},
-                         {'sk_6.reds100c.to_whomp.m64': 'unchanged', 'sk_6.st': 'unchanged',
+                         {'run_6.redcoins.to_whomp.m64': 'unchanged', 'run_6.st': 'unchanged',
                           'my state.st': 'converted'})
         self.assertFalse(os.path.exists(os.path.join(sub, 'for Mupen 1.3.0-11')))
         self.assertEqual(os.listdir(os.path.join(self.d, 'for Mupen 1.3.0-11')), ['my state.st'])
@@ -254,18 +254,18 @@ class Pairing(unittest.TestCase):
                 os.makedirs(d)
                 files = []
                 if ext is not None:
-                    files.append(os.path.join(d, 'sk_6.reds100c.to_whomp.m64'))
+                    files.append(os.path.join(d, 'run_6.redcoins.to_whomp.m64'))
                     open(files[-1], 'wb').write(movie(ext=ext, start=start))
                 if lz4 is not None:
-                    st = os.path.join(d, 'sk_6.st' if ext is not None else 'my state.st')
+                    st = os.path.join(d, 'run_6.st' if ext is not None else 'my state.st')
                     open(st, 'wb').write(lz4_stored(state_body()) if lz4 else gzip.compress(state_body()))
                     if ext is None:
                         files.append(st)
                 jobs = [Job(p) for p in files]
                 add_pairs(jobs)
                 run_jobs(jobs, target, mode='tagged')
-                new = sorted(set(os.listdir(d)) - {'sk_6.reds100c.to_whomp.m64', 'sk_6.st', 'my state.st'})
-                m, s = 'sk_6.reds100c.to_whomp.m64', 'sk_6.st'
+                new = sorted(set(os.listdir(d)) - {'run_6.redcoins.to_whomp.m64', 'run_6.st', 'my state.st'})
+                m, s = 'run_6.redcoins.to_whomp.m64', 'run_6.st'
                 movie_fine = target == '1.1.7'          # versions before 1.1.9 ignore the extended header
                 want = {'movie_only': [] if movie_fine else [appended(m, target)],
                         'both': sorted([prefixed(m, target), prefixed(s, target)]),
@@ -282,8 +282,8 @@ class Pairing(unittest.TestCase):
                         if case != 'movie_only':
                             self.assertEqual(os.path.basename(found), prefixed(s, target), (target, case, v))
             self.assertNotIn('.', name_prefix(target))                 # a dot in the prefix would break pairing
-        self.assertEqual(appended('sk_6.reds100c.to_whomp.m64', '1.3.0-11'), 'sk_6.reds100c.to_whomp.mupen1.3.0-11.m64')
-        self.assertEqual(prefixed('sk_6.st', '1.3.0-11'), 'mupen1_3_0-11_sk_6.st')
+        self.assertEqual(appended('run_6.redcoins.to_whomp.m64', '1.3.0-11'), 'run_6.redcoins.to_whomp.mupen1.3.0-11.m64')
+        self.assertEqual(prefixed('run_6.st', '1.3.0-11'), 'mupen1_3_0-11_run_6.st')
 
     def test_tagged_pair_that_already_works_is_skipped(self):
         m = self.put('run.m64', movie(ext=1))

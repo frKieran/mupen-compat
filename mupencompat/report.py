@@ -66,7 +66,7 @@ def describe(info, target=None):
             lines += [f'  Note: {why}' for _, why in F.hard_limits(info)]
         if info.kind == 'movie' and info.builtin_plugins() and (target == F.ANY or
                                                                 not F.at_least(target, F.BUILTIN_PLUGINS)):
-            lines.append(f'  Note: recorded with 1.5\'s built-in plugins. Older Mupens need their own era\'s plugin '
+            lines.append('  Note: recorded with 1.5\'s built-in plugins. Older Mupens need their own era\'s plugin '
                          'DLLs (TASVideo, TASInput, TASRSP); for SM64 the movie synced with them in every tested '
                          'version.')
         try:

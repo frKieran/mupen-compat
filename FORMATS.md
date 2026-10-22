@@ -82,9 +82,10 @@ its header version was lowered.
 (no emulation before 1.5.0). A movie recorded with them may desync where the setting can't be matched.
 
 ## Test results (2026-10-15)
-Cases: the 675f secret-reds movie (Island ROM, 683 inputs, extended v4) + its LZ4 `secretarea.st`, made in 1.5;
-"syncs" = played to the last input with gGlobalTimer, Mario's action and position identical to the 1.5.0-5 reference
-on every game frame. "v4 movie alone" = the original movie with a gzip copy of the state. LZ4 state = a 1.5 savestate on the same ROM.
+Cases: a 683-input movie made in 1.5 (extended v4) on an SM64 hack (US layout) + its LZ4 savestate; "syncs" =
+played to the last input with gGlobalTimer, Mario's action and position identical to the 1.5.0-5 reference on every
+game frame. "v4 movie alone" = the original movie with a gzip copy of the state. "LZ4 state" = a separate 1.5
+savestate on the same ROM.
 | Version | 1.5 pair, original | 1.5 pair, converted | v4 movie alone | LZ4 state, original | LZ4 state, converted |
 |---|---|---|---|---|---|
 | 1.1.8-2 | fails (state "from another rom") | syncs | **syncs** | fails | loads |
@@ -104,17 +105,17 @@ it with a warning. A gzip state with an RGBA screenshot loads in 1.3.0-11, 1.4.0
 same RAM words at every input sample) up to the last input. Runs in silent mode (no dialogs, no beeps).
 | Movie | ROM | Start | Inputs | Format | Reference | Played in | Result |
 |---|---|---|---|---|---|---|---|
-| Task 11 (TAS comp) | US | savestate (LZ4) | 783 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
-| Decade comp task 1 | US | savestate (LZ4) | 1,249 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
-| Bowser stage | Island | savestate (LZ4) | 1,604 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
-| poweron.lobby.168f | Island | power-on | 168 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
-| poweron.room1_to_sk100c.13209f (several levels) | Island | power-on | 13,209 | ext 4 | 1.5.0-6 | converted: 1.3.0-11 | syncs |
-| wdwexpress | US speed patch | savestate | 154 | ext 1 (1.4.0-7 plugins) | 1.4.0-7 | 1.5.0-6 | syncs |
-| bits_exit.to_rr | US | savestate | 133 | ext 1 (1.3 plugins) | 1.3.0-11 | 1.5.0-6 | syncs |
-| task 9 star road | Star Road | savestate | 751 | ext 1 (1.4 beta plugins) | 1.4.0-beta | 1.5.0-6 | syncs |
-| sk_6.finaltrip | Island | savestate | 2,728 | ext 1 | 1.4.0-7 | 1.5.0-6, 1.3.0-11 | both sync |
-| Castle Grounds to Lobby 5.20 (old HLE RSP plugin era) | JP | power-on | 1,770 | ext 0 | 1.3.0-11 | 1.5.0-6, 1.1.9-8 | both sync |
-| hole_in_two | US speed patch | power-on | 2,614 | ext 1 | 1.3.0-11 | 1.5.0-6 | syncs |
+| a competition task (one level) | US | savestate (LZ4) | 783 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
+| a competition task (one level) | US | savestate (LZ4) | 1,249 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
+| a Bowser stage | an SM64 hack | savestate (LZ4) | 1,604 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
+| intro to the castle lobby | an SM64 hack | power-on | 168 | ext 4 | 1.5.0-6 | converted: 1.4.0-7, 1.3.0-11, 1.1.9-8 | all sync |
+| a full-game segment (several levels) | an SM64 hack | power-on | 13,209 | ext 4 | 1.5.0-6 | converted: 1.3.0-11 | syncs |
+| a short level clip | US with a speed patch | savestate | 154 | ext 1 (1.4.0-7 plugins) | 1.4.0-7 | 1.5.0-6 | syncs |
+| a level exit | US | savestate | 133 | ext 1 (1.3 plugins) | 1.3.0-11 | 1.5.0-6 | syncs |
+| a competition task | Star Road (a hack) | savestate | 751 | ext 1 (1.4 beta plugins) | 1.4.0-beta | 1.5.0-6 | syncs |
+| a 100-coin run | an SM64 hack | savestate | 2,728 | ext 1 | 1.4.0-7 | 1.5.0-6, 1.3.0-11 | both sync |
+| castle grounds to the lobby (old HLE RSP plugin era) | JP | power-on | 1,770 | ext 0 | 1.3.0-11 | 1.5.0-6, 1.1.9-8 | both sync |
+| a hole-in-one style run | US with a speed patch | power-on | 2,614 | ext 1 | 1.3.0-11 | 1.5.0-6 | syncs |
 
 So for SM64 and its US-based hacks, the versions from 1.1.9 to 1.5.0-6 emulate identically, and the file format is
 the only thing standing between them. 1.1.8-2 couldn't serve as a reference for a power-on movie: its Lua logger
@@ -122,6 +123,10 @@ wrote nothing (a power-on start restarts `--lua` scripts), so that one is not a 
 
 **Real input (2026-10-15):** genuine mouse drags from Explorer (one file, then two
 selected with Ctrl+A onto the drop area, the duplicate ignored and the pair recognised) and a real click on Convert,; the copies landed in "for every Mupen".
+
+**What is and isn't in this repository.** The unit tests (`tests/test_formats.py`, synthetic files, no emulator) are included and run with one command. The real-emulator runs above, the window scenarios and the real-input test were
+driven from the author's machine (archived Mupen builds, private movies, a hidden desktop) and are not shipped; their
+results are the dated tables on this page.
 
 **Not tested:** 1.0.x (1.0.10 found none of the available plugins; its rules come from the source only) and the
 1.1.1 – 1.1.7 releases (no binaries here).

@@ -67,8 +67,10 @@ It only changes the *file format*, never your inputs or the game state:
 
 ## Will the movie stay in sync?
 
-For Super Mario 64 and its hacks, yes: converted movies were tested in the real emulators (1.1.8 through 1.5.0-6)
-and matched the original frame for frame. Older movies also play the same in new versions.
+For Super Mario 64 and its hacks, yes: on 2026-10-15, converted movies were played in the real emulators (1.1.8-2
+through 1.5.0-6: 15 builds, 11 movies in both directions) and matched the original frame for frame. Older movies also
+play the same in new versions. The per-version tables are in [FORMATS.md](FORMATS.md); those emulator runs were made
+from the author's machine and are not part of this repository, so they can't be re-run from here.
 
 Sync can still depend on emulator **settings**. When a movie says it was recorded with a special setting that
 older versions can't read from the file (like the counter factor or RCP lag), the details tell you which setting to
@@ -91,18 +93,30 @@ version).
 
 ## For developers
 
-Python 3.10+ on Windows, no extra packages:
+Python 3.10+ on Windows; the program itself needs no packages beyond the standard library (tkinter included).
 
 ```
 python MupenCompat.pyw                          # the window
 python -m mupencompat --report FILE...          # analyse files in the terminal
 python -m mupencompat --convert --target 1.3.0-11 FILE...
-python -m unittest tests/test_formats.py        # tests
-python build.py                                 # builds dist/MupenCompat.exe (needs pyinstaller and pillow)
+python -m unittest discover -s tests            # the unit tests (synthetic files, no emulator needed)
+pip install pyinstaller==6.22.3 pillow==12.3.0  # only to build the exe
+python build.py                                 # builds dist/MupenCompat.exe
 ```
 
-[FORMATS.md](FORMATS.md) is the technical write-up: what changed in each Mupen release and the test results.
+The unit tests check the format rules and the conversion on generated files. They do not run Mupen: the emulator
+results in the README and in FORMATS.md come from the author's test harness, which is not in this repository.
 
-## Licence
+[FORMATS.md](FORMATS.md) is the technical write-up: what changed in each Mupen release, how it was learned, and the
+test results.
 
-MIT, see [LICENSE](LICENSE). Mupen64-rr-lua is a separate project: [mupen64/mupen64-rr-lua](https://github.com/mupen64/mupen64-rr-lua).
+## Licence and credits
+
+MIT, see [LICENSE](LICENSE).
+
+- The file formats were learned by reading the source of [Mupen64-rr-lua](https://github.com/mupen64/mupen64-rr-lua)
+  (GPL-2.0-or-later), release by release, and by testing its published builds. No Mupen code is included here; the
+  byte layouts in `mupencompat/formats.py` and FORMATS.md are descriptions of that format, written for this tool.
+- `mupencompat/lz4frame.py` is a small LZ4 frame decoder written for this tool (plain Python, so no extra package is
+  needed); it implements the public [LZ4 frame format](https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md).
+- No ROM, savestate or movie data is included. The tests generate their own files.
